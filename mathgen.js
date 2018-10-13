@@ -127,8 +127,8 @@ class OperatorGen {
             variables = {a: a.evaluate(), b: b.evaluate()};
             i++;
         }
-        while (!this.rules.every(x => x.validate(variables)) && i <= 1000);
-        if (i >= 1000) {
+        while (!this.rules.every(x => x.validate(variables)) && i <= 10000);
+        if (i >= 10000) {
             return undefined;
         }
         return new this.operator(a, b);

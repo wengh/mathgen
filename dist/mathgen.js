@@ -212,8 +212,8 @@ var OperatorGen = function () {
                 i++;
             } while (!this.rules.every(function (x) {
                 return x.validate(variables);
-            }) && i <= 1000);
-            if (i >= 1000) {
+            }) && i <= 10000);
+            if (i >= 10000) {
                 return undefined;
             }
             return new this.operator(a, b);
