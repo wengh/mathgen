@@ -1,4 +1,4 @@
-Object.defineProperty(Number.prototype, "priority", {
+Object.defineProperty(Number.prototype, 'priority', {
     get: () => 1000
 });
 Number.prototype.evaluate = function () {
@@ -39,10 +39,18 @@ class Operator {
 
     get priority() {
         return 0;
-    };
+    }
 
     get floorPriority() {
         return Math.floor(this.priority / 10) * 10;
+    }
+
+    static get symbol() {
+        return ' ';
+    }
+
+    static get locName() {
+        return '运算符';
     }
 }
 
@@ -61,7 +69,15 @@ class Addition extends Operator {
 
     get priority() {
         return 5;
-    };
+    }
+
+    static get symbol() {
+        return '+';
+    }
+
+    static get locName() {
+        return '加法';
+    }
 }
 
 class Subtraction extends Operator {
@@ -79,7 +95,15 @@ class Subtraction extends Operator {
 
     get priority() {
         return 4;
-    };
+    }
+
+    static get symbol() {
+        return '-';
+    }
+
+    static get locName() {
+        return '减法';
+    }
 }
 
 class Multiplication extends Operator {
@@ -98,6 +122,14 @@ class Multiplication extends Operator {
     get priority() {
         return 15;
     }
+
+    static get symbol() {
+        return '*';
+    }
+
+    static get locName() {
+        return '乘法';
+    }
 }
 
 class Division extends Operator {
@@ -113,16 +145,22 @@ class Division extends Operator {
         return this.a.evaluate() / this.b.evaluate();
     }
 
-    static get priority() {
+    get priority() {
         return 14;
+    }
+
+    static get symbol() {
+        return '/';
+    }
+
+    static get locName() {
+        return '除法';
     }
 }
 
-const Operators = [Addition, Subtraction, Multiplication, Division];
-
-const OperatorsEnum = {
-    addition: 1,
-    subtraction: 2,
-    multiplication: 4,
-    division: 8
+const Operators = {
+    addition: Addition,
+    subtraction: Subtraction,
+    multiplication: Multiplication,
+    division: Division
 };

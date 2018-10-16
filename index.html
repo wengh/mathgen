@@ -1,18 +1,79 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <link rel="stylesheet" href="style.css">
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/iview/dist/iview.min.js"></script>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        
+
         <div id="app">
-            <span v-if="seen">Now you see me</span>
+            <dropdown trigger="click" v-on:on-click="addOperator">
+                <i-button type="primary">
+                    添加运算符
+                    <icon type="ios-arrow-down"></icon>
+                </i-button>
+                <dropdown-menu slot="list">
+                    <dropdown-item name="addition">加法</dropdown-item>
+                    <dropdown-item name="subtraction">减法</dropdown-item>
+                    <dropdown-item name="multiplication">乘法</dropdown-item>
+                    <dropdown-item name="division">除法</dropdown-item>
+                </dropdown-menu>
+            </dropdown>
+            <divider></divider>
+            <collapse>
+                <panel v-for="(op, index) in generator.operators" :key="'op' + index">
+                    <span>{{ op.operator.locName }}</span>
+                    <div slot="content">
+                        <collapse>
+                            <panel>
+                                <span v-if="!op.range.isAdv">随机取值</span>
+                                <span v-else>高级随机取值</span>
+                                <div slot="content" class="editor">
+                                    <i-button type="warning" @click="op.toggleRangeType()">
+                                        <span v-if="op.range.isAdv">切换到普通随机取值 (可能会丢失数据)</span>
+                                        <span v-else>切换到高级随机取值</span>
+                                    </i-button>
+                                    <divider></divider>
+                                    <div>
+                                        a {{ op.operator.symbol }} b :<br>
+                                        <i-input v-model="op.range.minA" placeholder="数字/表达式" style="width: auto"></i-input>
+                                        <span> ≤ a ≤ </span>
+                                        <i-input v-model="op.range.maxA" placeholder="数字/表达式" style="width: auto"></i-input>
+                                        <br>
+                                        <i-input v-model="op.range.minB" placeholder="数字/表达式" style="width: auto"></i-input>
+                                        <span> ≤ b ≤ </span>
+                                        <i-input v-model="op.range.maxB" placeholder="数字/表达式" style="width: auto"></i-input>
+                                    </div>
+                                    优先计算:
+                                    <radio-group v-model="op.range.first" type="button">
+                                        <radio label="0">a</radio>
+                                        <radio label="1">b</radio>
+                                    </radio-group>
+                                </div>
+                            </panel>
+                        </collapse>
+                        <divider></divider>
+                        <i-button type="primary" @click="op.addRule()">
+                            添加规则
+                        </i-button>
+                        <div v-for="(rule, index) in op.rules">
+                            <i-input v-model="rule.condition" placeholder="布尔值表达式" style="width: 100%">
+                                <i-button slot="append" @click="op.rules.removeIndex(index)" class="no-spacing" style="height: 32px" type="error" icon="md-close"></i-button>
+                            </i-input>
+                        </div>
+                    </div>
+                </panel>
+            </collapse>
+            <divider></divider>
+            <i-button slot="append" @click="generate" type="primary" icon="md-shuffle">生成算式</i-button>
+            <divider></divider>
+            <p class="mono">{{ generator }}</p>
         </div>
 
         <script src="expr-eval.min.js"></script>
         <script src="dist/operators.js"></script>
+        <script src="dist/generation.js"></script>
         <script src="dist/mathgen.js"></script>
     </body>
 </html>

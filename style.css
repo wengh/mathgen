@@ -1,0 +1,14 @@
+@import url("https://cdn.jsdelivr.net/npm/iview/dist/styles/iview.css");
+
+#app {
+    padding: 32px;
+}
+
+.editor * :not(.no-spacing):not(input){
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+input, .mono {
+    font-family:DejaVu Sans Mono,Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+}

@@ -8,7 +8,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-Object.defineProperty(Number.prototype, "priority", {
+Object.defineProperty(Number.prototype, 'priority', {
     get: function get() {
         return 1000;
     }
@@ -62,6 +62,16 @@ var Operator = function () {
         get: function get() {
             return Math.floor(this.priority / 10) * 10;
         }
+    }], [{
+        key: 'symbol',
+        get: function get() {
+            return ' ';
+        }
+    }, {
+        key: 'locName',
+        get: function get() {
+            return '运算符';
+        }
     }]);
 
     return Operator;
@@ -90,6 +100,16 @@ var Addition = function (_Operator) {
         key: 'priority',
         get: function get() {
             return 5;
+        }
+    }], [{
+        key: 'symbol',
+        get: function get() {
+            return '+';
+        }
+    }, {
+        key: 'locName',
+        get: function get() {
+            return '加法';
         }
     }]);
 
@@ -120,6 +140,16 @@ var Subtraction = function (_Operator2) {
         get: function get() {
             return 4;
         }
+    }], [{
+        key: 'symbol',
+        get: function get() {
+            return '-';
+        }
+    }, {
+        key: 'locName',
+        get: function get() {
+            return '减法';
+        }
     }]);
 
     return Subtraction;
@@ -149,6 +179,16 @@ var Multiplication = function (_Operator3) {
         get: function get() {
             return 15;
         }
+    }], [{
+        key: 'symbol',
+        get: function get() {
+            return '*';
+        }
+    }, {
+        key: 'locName',
+        get: function get() {
+            return '乘法';
+        }
     }]);
 
     return Multiplication;
@@ -173,22 +213,30 @@ var Division = function (_Operator4) {
         value: function evaluate() {
             return this.a.evaluate() / this.b.evaluate();
         }
-    }], [{
+    }, {
         key: 'priority',
         get: function get() {
             return 14;
+        }
+    }], [{
+        key: 'symbol',
+        get: function get() {
+            return '/';
+        }
+    }, {
+        key: 'locName',
+        get: function get() {
+            return '除法';
         }
     }]);
 
     return Division;
 }(Operator);
 
-var Operators = [Addition, Subtraction, Multiplication, Division];
-
-var OperatorsEnum = {
-    addition: 1,
-    subtraction: 2,
-    multiplication: 4,
-    division: 8
+var Operators = {
+    addition: Addition,
+    subtraction: Subtraction,
+    multiplication: Multiplication,
+    division: Division
 };
 //# sourceMappingURL=operators.js.map
