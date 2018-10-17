@@ -23,19 +23,19 @@
     <collapse>
         <panel v-for="(op, index) in generator.operators" :key="'op' + index">
             <span>{{ op.operatorName }}</span>
-            <div slot="content">
+            <div slot="content" class="editor">
                 <collapse simple>
                     <panel>
                         <span v-if="!op.range.isAdv">随机取值</span>
                         <span v-else>高级随机取值</span>
-                        <div slot="content" class="editor">
+                        <div slot="content">
                             <i-button type="warning" @click="op.toggleRangeType()">
                                 <span v-if="op.range.isAdv">切换到普通随机取值 (可能会丢失数据)</span>
                                 <span v-else>切换到高级随机取值</span>
                             </i-button>
                             <divider></divider>
                             <div>
-                                a {{ op.operator.symbol }} b :<br>
+                                a {{ op.operatorSymbol }} b :<br>
                                 <i-input v-model="op.range.minA" placeholder="数字/表达式" style="width: auto"></i-input>
                                 <span> ≤ a ≤ </span>
                                 <i-input v-model="op.range.maxA" placeholder="数字/表达式" style="width: auto"></i-input>
@@ -52,8 +52,7 @@
                         </div>
                     </panel>
                 </collapse>
-                <divider></divider>
-                <i-button type="primary" @click="op.addRule()">
+                <i-button type="primary" @click="op.addRule()" style="margin-top: 6px">
                     添加规则
                 </i-button>
                 <div v-for="(rule, index) in op.rules">
@@ -68,6 +67,7 @@
     <divider></divider>
     <i-button @click="generate" type="primary" icon="md-shuffle">生成算式</i-button>
     <i-button @click="save" icon="md-code">生成JSON</i-button>
+    <i-button @click="showLoadModal" icon="md-exit">加载JSON</i-button>
     <divider></divider>
     <p class="mono">{{ generator }}</p>
 </div>

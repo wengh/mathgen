@@ -331,6 +331,11 @@ var OperatorGen = function () {
         get: function get() {
             return Operators[this.operator].locName;
         }
+    }, {
+        key: 'operatorSymbol',
+        get: function get() {
+            return Operators[this.operator].symbol;
+        }
     }]);
 
     return OperatorGen;

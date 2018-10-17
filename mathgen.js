@@ -36,7 +36,7 @@ const app = new Vue({
             let results = generator.generate(10);
             this.$Notice.open({
                 title: '算式',
-                desc: results.toString().replace(/,/g, '\n'),
+                desc: results.toString().replace(/,/g, '<br>'),
                 duration: 0
             });
         },
@@ -48,6 +48,36 @@ const app = new Vue({
                 duration: 5
             });
             this.$copyText(json);
+        },
+        load: function (json) {
+            generator.operators = ts.parse(json);
+            this.$Notice.open({
+                title: '已加载JSON',
+                duration: 3
+            });
+        },
+        showLoadModal: function () {
+            this.$Modal.confirm({
+                render: (h) => {
+                    return h('Input', {
+                        props: {
+                            value: this.value,
+                            autofocus: true,
+                            placeholder: 'JSON数据',
+                            type: 'textarea',
+                            autosize: true
+                        },
+                        on: {
+                            input: (val) => {
+                                this.value = val;
+                            }
+                        }
+                    })
+                },
+                width: 800,
+                scrollable: true,
+                onOk: () => this.load(this.value)
+            })
         }
     }
 });

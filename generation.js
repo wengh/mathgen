@@ -201,6 +201,10 @@ class OperatorGen {
         return Operators[this.operator].locName;
     }
 
+    get operatorSymbol() {
+        return Operators[this.operator].symbol;
+    }
+
     generate(operatorGenFuncA = undefined, operatorGenFuncB = undefined) {
         let a = 0, b = 0;
         let i = 0;
