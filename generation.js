@@ -197,6 +197,10 @@ class OperatorGen {
         this.rules.push(new Rule());
     }
 
+    get operatorName() {
+        return Operators[this.operator].locName;
+    }
+
     generate(operatorGenFuncA = undefined, operatorGenFuncB = undefined) {
         let a = 0, b = 0;
         let i = 0;
@@ -229,7 +233,7 @@ class OperatorGen {
         if (i >= 10000) {
             return undefined;
         }
-        return new this.operator(a, b);
+        return new Operators[this.operator](a, b);
     }
 }
 

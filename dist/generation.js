@@ -324,7 +324,12 @@ var OperatorGen = function () {
             if (i >= 10000) {
                 return undefined;
             }
-            return new this.operator(a, b);
+            return new Operators[this.operator](a, b);
+        }
+    }, {
+        key: 'operatorName',
+        get: function get() {
+            return Operators[this.operator].locName;
         }
     }]);
 
