@@ -30,7 +30,7 @@ class Expression {
             }
             else {
                 this.source = source;
-                this.expression = parser.parse(source);
+                this.expression = parser.parse(source).simplify();
                 this.isNumber = false;
             }
         }
@@ -127,24 +127,29 @@ class RandRange {
 class RandRangeAdv extends RandRange {
     constructor(minA, maxA, minB, maxB, expression, target, BFirst = false) {
         super(minA, maxA, minB, maxB, BFirst);
-        this.expression = parser.parse(expression);
-        if (target === 'a') this.target = 0;
-        else if (target === 'b') this.target = 1;
+        this.expression = expression;
+        this.target = target;
     }
 
-    setExpression(expression) {
-        this.expression = parser.parse(expression);
+    set expression(expr) {
+        this._expression = new Expression(expr);
+    }
+    get expression() {
+        return this._expression.source;
     }
 
-    setTarget(target) {
-        if (target === 'a') this.target = 0;
-        else if (target === 'b') this.target = 1;
+    set target(num) {
+        num = parseInt(num);
+        this._target = num;
+    }
+    get target() {
+        return this._target;
     }
 
     generate(a = undefined, b = undefined) {
         let result = super.generate(a, b);
         if (!((a !== undefined && this.target === 0) || (b !== undefined && this.target === 1))) {
-            result[this.target] = this.expression.evaluate({a: result[0], b: result[1]});
+            result[this.target] = this._expression.value({a: result[0], b: result[1]});
         }
         return result;
     }
@@ -165,7 +170,7 @@ class Rule {
     }
 
     set condition(expr) {
-        this._condition = parser.parse(expr);
+        this._condition = parser.parse(expr).simplify();
         this.source = expr;
     }
     get condition() {
@@ -242,13 +247,14 @@ class OperatorGen {
 }
 
 class Generator {
-    constructor(minOperators, maxOperators, ...operatorGens) {
+    constructor(minOperators, maxOperators, count, ...operatorGens) {
         this.min = minOperators;
         this.max = maxOperators;
         this.operators = operatorGens;
+        this.count = count;
     }
 
-    generate(count = 1) {
+    generate(count = this.count) {
         let results = [];
         for (let i = 0; i < count; i++) {
             let len = randInt(this.min, this.max);

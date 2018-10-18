@@ -15,15 +15,27 @@ var ts = new Typeson().register({
     Subtraction: Subtraction,
     Multiplication: Multiplication,
     Division: Division,
-    Expression: Expression,
     RandRange: RandRange,
     RandRangeAdv: RandRangeAdv,
-    Rule: Rule,
     OperatorGen: OperatorGen,
-    Generator: Generator
+    Generator: Generator,
+    Expression: [function (x) {
+        return x instanceof Expression;
+    }, function (expr) {
+        return expr.source;
+    }, function (source) {
+        return new Expression(source);
+    }],
+    Rule: [function (x) {
+        return x instanceof Rule;
+    }, function (rule) {
+        return rule.source;
+    }, function (source) {
+        return new Rule(source);
+    }]
 });
 
-var generator = new Generator(1, 1);
+var generator = new Generator(1, 1, 10);
 
 var app = new Vue({
     el: '#app',
@@ -35,7 +47,7 @@ var app = new Vue({
             generator.operators.push(new OperatorGen(operator, new RandRange(0, 100, 0, 100, false)));
         },
         generate: function generate() {
-            var results = generator.generate(10);
+            var results = generator.generate();
             this.$Notice.open({
                 title: '算式',
                 desc: results.toString().replace(/,/g, '<br>'),
@@ -43,7 +55,7 @@ var app = new Vue({
             });
         },
         save: function save() {
-            var json = ts.stringify(generator.operators);
+            var json = ts.stringify(generator);
             this.$Notice.open({
                 title: 'JSON数据 - 已复制到剪贴板',
                 desc: json,
@@ -52,7 +64,7 @@ var app = new Vue({
             this.$copyText(json);
         },
         load: function load(json) {
-            generator.operators = ts.parse(json);
+            generator = this.$root.$data.generator = ts.parse(json);
             this.$Notice.open({
                 title: '已加载JSON',
                 duration: 3
@@ -84,6 +96,9 @@ var app = new Vue({
                     return _this.load(_this.value);
                 }
             });
+        },
+        removeDecimal: function removeDecimal(str) {
+            return str.substr(0, str.indexOf('.'));
         }
     }
 });

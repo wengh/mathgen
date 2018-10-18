@@ -13,15 +13,23 @@ const ts = new Typeson().register({
     Subtraction:Subtraction,
     Multiplication:Multiplication,
     Division:Division,
-    Expression:Expression,
     RandRange:RandRange,
     RandRangeAdv:RandRangeAdv,
-    Rule:Rule,
     OperatorGen:OperatorGen,
-    Generator:Generator
+    Generator:Generator,
+    Expression: [
+        x => x instanceof Expression,
+        expr => expr.source,
+        source => new Expression(source)
+    ],
+    Rule: [
+        x => x instanceof Rule,
+        rule => rule.source,
+        source => new Rule(source)
+    ]
 });
 
-const generator = new Generator(1, 1);
+let generator = new Generator(1, 1, 10);
 
 const app = new Vue({
     el: '#app',
@@ -33,7 +41,7 @@ const app = new Vue({
             generator.operators.push(new OperatorGen(operator, new RandRange(0, 100, 0, 100, false)));
         },
         generate: function () {
-            let results = generator.generate(10);
+            let results = generator.generate();
             this.$Notice.open({
                 title: '算式',
                 desc: results.toString().replace(/,/g, '<br>'),
@@ -41,7 +49,7 @@ const app = new Vue({
             });
         },
         save: function () {
-            let json = ts.stringify(generator.operators);
+            let json = ts.stringify(generator);
             this.$Notice.open({
                 title: 'JSON数据 - 已复制到剪贴板',
                 desc: json,
@@ -50,7 +58,7 @@ const app = new Vue({
             this.$copyText(json);
         },
         load: function (json) {
-            generator.operators = ts.parse(json);
+            generator = this.$root.$data.generator = ts.parse(json);
             this.$Notice.open({
                 title: '已加载JSON',
                 duration: 3
@@ -78,6 +86,7 @@ const app = new Vue({
                 scrollable: true,
                 onOk: () => this.load(this.value)
             })
-        }
+        },
+        removeDecimal: str => str.substr(0, str.indexOf('.'))
     }
 });

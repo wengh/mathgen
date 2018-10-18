@@ -9,6 +9,6 @@
     margin-bottom: 3px;
 }
 
-input, .mono {
+input, textarea, .mono {
     font-family:DejaVu Sans Mono,Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,Bitstream Vera Sans Mono,Courier New, monospace;
 }

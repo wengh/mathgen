@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.jsdelivr.net/combine/npm/vue@2/dist/vue.min.js,npm/iview@3/dist/iview.min.js,npm/typeson@5/dist/typeson.min.js,npm/typeson-registry@1.0.0-alpha.21/dist/all.min.js,npm/vue-clipboard2@0.2/dist/vue-clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/combine/npm/vue@2/dist/vue.min.js,npm/iview@3/dist/iview.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,12 +30,11 @@
                         <span v-else>高级随机取值</span>
                         <div slot="content">
                             <i-button type="warning" @click="op.toggleRangeType()">
-                                <span v-if="op.range.isAdv">切换到普通随机取值 (可能会丢失数据)</span>
+                                <span v-if="op.range.isAdv">切换到普通随机取值 (会丢失高级选项)</span>
                                 <span v-else>切换到高级随机取值</span>
                             </i-button>
-                            <divider></divider>
                             <div>
-                                a {{ op.operatorSymbol }} b :<br>
+                                <divider orientation="left">a {{ op.operatorSymbol }} b</divider>
                                 <i-input v-model="op.range.minA" placeholder="数字/表达式" style="width: auto"></i-input>
                                 <span> ≤ a ≤ </span>
                                 <i-input v-model="op.range.maxA" placeholder="数字/表达式" style="width: auto"></i-input>
@@ -46,9 +45,18 @@
                             </div>
                             优先计算:
                             <radio-group v-model="op.range.first" type="button">
-                                <radio label="0">a</radio>
-                                <radio label="1">b</radio>
+                                <radio label="a">a</radio>
+                                <radio label="b">b</radio>
                             </radio-group>
+                            <div v-if="op.range.isAdv">
+                                <divider orientation="left">高级选项</divider>
+                                覆盖:
+                                <radio-group v-model="op.range.target" type="button">
+                                    <radio label="0">a</radio>
+                                    <radio label="1">b</radio>
+                                </radio-group><br>
+                                {{ op.range.target === 0 ? 'a' : 'b' }} = <i-input v-model="op.range.expression" placeholder="表达式" style="width: auto"></i-input>
+                            </div>
                         </div>
                     </panel>
                 </collapse>
@@ -65,13 +73,16 @@
         </panel>
     </collapse>
     <divider></divider>
+    数量: <input-number :max="1000" :min="1" :step="1" :precision="1" :formatter="removeDecimal" v-model="generator.count"></input-number>
     <i-button @click="generate" type="primary" icon="md-shuffle">生成算式</i-button>
+    <divider orientation="left">加载/保存</divider>
     <i-button @click="save" icon="md-code">生成JSON</i-button>
     <i-button @click="showLoadModal" icon="md-exit">加载JSON</i-button>
     <divider></divider>
     <p class="mono">{{ generator }}</p>
 </div>
 
+<script src="https://cdn.jsdelivr.net/combine/npm/typeson@5/dist/typeson.min.js,npm/typeson-registry@1.0.0-alpha.21/dist/all.min.js,npm/vue-clipboard2@0.2/dist/vue-clipboard.min.js"></script>
 <script src="expr-eval.min.js"></script>
 <script src="dist/operators.min.js"></script>
 <script src="dist/generation.min.js"></script>

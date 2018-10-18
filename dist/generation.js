@@ -54,7 +54,7 @@ var Expression = function () {
                     this.isNumber = source.isNumber;
                 } else {
                     this.source = source;
-                    this.expression = parser.parse(source);
+                    this.expression = parser.parse(source).simplify();
                     this.isNumber = false;
                 }
             } else {
@@ -172,22 +172,12 @@ var RandRangeAdv = function (_RandRange) {
 
         var _this = _possibleConstructorReturn(this, (RandRangeAdv.__proto__ || Object.getPrototypeOf(RandRangeAdv)).call(this, minA, maxA, minB, maxB, BFirst));
 
-        _this.expression = parser.parse(expression);
-        if (target === 'a') _this.target = 0;else if (target === 'b') _this.target = 1;
+        _this.expression = expression;
+        _this.target = target;
         return _this;
     }
 
     _createClass(RandRangeAdv, [{
-        key: 'setExpression',
-        value: function setExpression(expression) {
-            this.expression = parser.parse(expression);
-        }
-    }, {
-        key: 'setTarget',
-        value: function setTarget(target) {
-            if (target === 'a') this.target = 0;else if (target === 'b') this.target = 1;
-        }
-    }, {
         key: 'generate',
         value: function generate() {
             var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
@@ -195,9 +185,26 @@ var RandRangeAdv = function (_RandRange) {
 
             var result = _get(RandRangeAdv.prototype.__proto__ || Object.getPrototypeOf(RandRangeAdv.prototype), 'generate', this).call(this, a, b);
             if (!(a !== undefined && this.target === 0 || b !== undefined && this.target === 1)) {
-                result[this.target] = this.expression.evaluate({ a: result[0], b: result[1] });
+                result[this.target] = this._expression.value({ a: result[0], b: result[1] });
             }
             return result;
+        }
+    }, {
+        key: 'expression',
+        set: function set(expr) {
+            this._expression = new Expression(expr);
+        },
+        get: function get() {
+            return this._expression.source;
+        }
+    }, {
+        key: 'target',
+        set: function set(num) {
+            num = parseInt(num);
+            this._target = num;
+        },
+        get: function get() {
+            return this._target;
         }
     }, {
         key: 'isAdv',
@@ -230,7 +237,7 @@ var Rule = function () {
     }, {
         key: 'condition',
         set: function set(expr) {
-            this._condition = parser.parse(expr);
+            this._condition = parser.parse(expr).simplify();
             this.source = expr;
         },
         get: function get() {
@@ -342,17 +349,18 @@ var OperatorGen = function () {
 }();
 
 var Generator = function () {
-    function Generator(minOperators, maxOperators) {
+    function Generator(minOperators, maxOperators, count) {
         _classCallCheck(this, Generator);
 
         this.min = minOperators;
         this.max = maxOperators;
 
-        for (var _len2 = arguments.length, operatorGens = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-            operatorGens[_key2 - 2] = arguments[_key2];
+        for (var _len2 = arguments.length, operatorGens = Array(_len2 > 3 ? _len2 - 3 : 0), _key2 = 3; _key2 < _len2; _key2++) {
+            operatorGens[_key2 - 3] = arguments[_key2];
         }
 
         this.operators = operatorGens;
+        this.count = count;
     }
 
     _createClass(Generator, [{
@@ -360,7 +368,7 @@ var Generator = function () {
         value: function generate() {
             var _this3 = this;
 
-            var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+            var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.count;
 
             var results = [];
             for (var i = 0; i < count; i++) {
