@@ -6,31 +6,38 @@ Array.prototype.remove = function(element) {
 Array.prototype.removeIndex = function(index) {
     this.splice(index, 1);
 };
+String.prototype.afterLast = function(str, separator) {
+    const index = str.lastIndexOf(separator);
+    if (index !== -1) {
+        return str.slice(index + 1);
+    }
+    else {
+        return null;
+    }
+}
 
-function uploadToPastebin(data, callback = console.log) {
-    let body = "api_dev_key=1dfd342af2837432ca84ba4374e44a33" +
-        "&api_option=paste" +
-        "&api_paste_code=" + encodeURIComponent(data) +
-        "&api_paste_private=1" +
-        "&api_paste_format=json" +
-        "&api_paste_expire_date=N" +
-        "&api_paste_name=mathgen%20data";
-
-    let xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-
-    xhr.addEventListener("readystatechange", function () {
+function uploadJSON(json, callback = console.log) {
+    const data = JSON.stringify(json);
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('readystatechange', function () {
+        if (this.readyState === 4) {
+            callback(JSON.parse(this.responseText).uri);
+        }
+    });
+    xhr.open('POST', 'https://api.myjson.com/bins');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('cache-control', 'no-cache');
+    xhr.send(data);
+}
+function downloadJSON(id, callback = console.log) {
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('readystatechange', function () {
         if (this.readyState === 4) {
             callback(this.responseText);
         }
     });
-
-    xhr.open("POST", "https://pastebin.com/api/api_post.php");
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.setRequestHeader("cache-control", "no-cache");
-    xhr.setRequestHeader("Postman-Token", "a0bd0ab3-7799-4c25-ae5a-1c636152b15e");
-
-    xhr.send(body);
+    xhr.open('GET', 'https://api.myjson.com/bins/' + id);
+    xhr.send();
 }
 
 const ts = new Typeson().register({
@@ -75,17 +82,18 @@ const app = new Vue({
         },
         save: function () {
             let json = ts.stringify(generator);
+            this.$copyText(json);
             this.$Notice.open({
                 title: 'JSON数据 - 已复制到剪贴板',
                 desc: json,
             });
-            this.$copyText(json);
         },
         load: function (json) {
-            generator = this.$root.$data.generator = ts.parse(json);
-            this.$Notice.open({
-                title: '已加载JSON',
-            });
+            generator = this.generator = ts.parse(json);
+            this.$Message.success('已加载JSON');
+        },
+        download: function(id) {
+            downloadJSON(id, (json) => this.load(json));
         },
         showLoadModal: function () {
             this.$Modal.confirm({
@@ -110,6 +118,19 @@ const app = new Vue({
                 onOk: () => this.load(this.value)
             })
         },
+        share: function () {
+            uploadJSON(ts.encapsulate(generator), link => Vue.nextTick(() => {
+                link = 'https://wenghy.me/mathgen?' + link.afterLast('/');
+                this.$Modal.confirm({
+                    title: '分享成功!',
+                    content: link,
+                    okText: '复制链接',
+                    onOk: () => {
+                        this.$copyText(link);
+                    }
+                });
+            }));
+        },
         removeDecimal: str => str.substr(0, str.indexOf('.')),
         print: function (index) {
             printJS({
@@ -123,3 +144,8 @@ const app = new Vue({
         lastHalf: (list) => list.slice(Math.floor(list.length / 2)),
     }
 });
+
+const params = window.location.href.afterLast('?');
+if (params != null) {
+    app.download(params);
+}

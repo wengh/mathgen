@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Array.prototype.remove = function (element) {
     for (var i = this.length - 1; i--;) {
@@ -8,27 +8,41 @@ Array.prototype.remove = function (element) {
 Array.prototype.removeIndex = function (index) {
     this.splice(index, 1);
 };
+String.prototype.afterLast = function (str, separator) {
+    var index = str.lastIndexOf(separator);
+    if (index !== -1) {
+        return str.slice(index + 1);
+    } else {
+        return null;
+    }
+};
 
-function uploadToPastebin(data) {
+function uploadJSON(json) {
     var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : console.log;
 
-    var body = "api_dev_key=1dfd342af2837432ca84ba4374e44a33" + "&api_option=paste" + "&api_paste_code=" + encodeURIComponent(data) + "&api_paste_private=1" + "&api_paste_format=json" + "&api_paste_expire_date=N" + "&api_paste_name=mathgen%20data";
+    var data = JSON.stringify(json);
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener('readystatechange', function () {
+        if (this.readyState === 4) {
+            callback(JSON.parse(this.responseText).uri);
+        }
+    });
+    xhr.open('POST', 'https://api.myjson.com/bins');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('cache-control', 'no-cache');
+    xhr.send(data);
+}
+function downloadJSON(id) {
+    var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : console.log;
 
     var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-
-    xhr.addEventListener("readystatechange", function () {
+    xhr.addEventListener('readystatechange', function () {
         if (this.readyState === 4) {
             callback(this.responseText);
         }
     });
-
-    xhr.open("POST", "https://pastebin.com/api/api_post.php");
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.setRequestHeader("cache-control", "no-cache");
-    xhr.setRequestHeader("Postman-Token", "a0bd0ab3-7799-4c25-ae5a-1c636152b15e");
-
-    xhr.send(body);
+    xhr.open('GET', 'https://api.myjson.com/bins/' + id);
+    xhr.send();
 }
 
 var ts = new Typeson().register({
@@ -73,30 +87,35 @@ var app = new Vue({
         generate: function generate() {
             var results = generator.generate();
             this.hist.push(results);
-            this.$Message.success("\u6210\u529F\u751F\u6210" + results.length + "\u4E2A\u7B97\u5F0F");
+            this.$Message.success('\u6210\u529F\u751F\u6210' + results.length + '\u4E2A\u7B97\u5F0F');
         },
         save: function save() {
             var json = ts.stringify(generator);
+            this.$copyText(json);
             this.$Notice.open({
                 title: 'JSON数据 - 已复制到剪贴板',
                 desc: json
             });
-            this.$copyText(json);
         },
         load: function load(json) {
-            generator = this.$root.$data.generator = ts.parse(json);
-            this.$Notice.open({
-                title: '已加载JSON'
+            generator = this.generator = ts.parse(json);
+            this.$Message.success('已加载JSON');
+        },
+        download: function download(id) {
+            var _this = this;
+
+            downloadJSON(id, function (json) {
+                return _this.load(json);
             });
         },
         showLoadModal: function showLoadModal() {
-            var _this = this;
+            var _this2 = this;
 
             this.$Modal.confirm({
                 render: function render(h) {
                     return h('Input', {
                         props: {
-                            value: _this.value,
+                            value: _this2.value,
                             autofocus: true,
                             placeholder: 'JSON数据',
                             type: 'textarea',
@@ -104,7 +123,7 @@ var app = new Vue({
                         },
                         on: {
                             input: function input(val) {
-                                _this.value = val;
+                                _this2.value = val;
                             }
                         }
                     });
@@ -112,8 +131,25 @@ var app = new Vue({
                 width: 800,
                 scrollable: true,
                 onOk: function onOk() {
-                    return _this.load(_this.value);
+                    return _this2.load(_this2.value);
                 }
+            });
+        },
+        share: function share() {
+            var _this3 = this;
+
+            uploadJSON(ts.encapsulate(generator), function (link) {
+                return Vue.nextTick(function () {
+                    link = 'https://wenghy.me/mathgen?' + link.afterLast('/');
+                    _this3.$Modal.confirm({
+                        title: '分享成功!',
+                        content: link,
+                        okText: '复制链接',
+                        onOk: function onOk() {
+                            _this3.$copyText(link);
+                        }
+                    });
+                });
             });
         },
         removeDecimal: function removeDecimal(str) {
@@ -135,4 +171,9 @@ var app = new Vue({
         }
     }
 });
+
+var params = window.location.href.afterLast('?');
+if (params != null) {
+    app.download(params);
+}
 //# sourceMappingURL=mathgen.js.map
