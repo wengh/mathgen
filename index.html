@@ -77,23 +77,30 @@
     数量: <input-number :max="1000" :min="1" :step="1" :precision="1" :formatter="removeDecimal" v-model="generator.count"></input-number>
     <i-button @click="generate" type="primary" icon="md-shuffle">生成题目</i-button>
     <divider orientation="left">加载/保存</divider>
-    <i-button @click="save" icon="md-code">生成JSON</i-button>
-    <i-button @click="showLoadModal" icon="md-exit">加载JSON</i-button>
+    <button-group>
+        <i-button @click="save" icon="md-code">生成JSON</i-button>
+        <i-button @click="showLoadModal" icon="md-exit">加载JSON</i-button>
+    </button-group>
     <divider></divider>
-    <p class="mono">{{ generator }}</p>
+    <collapse>
+        <panel>
+            数据
+            <p slot="content" class="mono">{{ generator }}</p>
+        </panel>
+    </collapse>
     <divider orientation="left">生成记录</divider>
     <collapse>
         <panel v-for="(list, index) in hist" :key="index">
-            <tooltip content="打印题目">
-                <a @click="print(index)" style="margin-right: 30px"><icon size="20" type="md-print"></icon></a>
-            </tooltip>
             <span>第{{ (index + 1).toString() + '次生成, 题目数量: ' + list.length.toString() }}个</span>
-            <div slot="content" class="split" :id="'history' + index">
-                <div class="column">
-                    <span class="row" v-for="(el, index) in firstHalf(list)">{{ el.toString() }} =</span>
-                </div>
-                <div class="column">
-                    <span class="row" v-for="(el, index) in lastHalf(list)">{{ el.toString() }} =</span>
+            <div slot="content">
+                <i-button @click="print(index)" style="margin-bottom: 6px" icon="md-print">打印</i-button>
+                <div class="split" :id="'history' + index">
+                    <div class="column">
+                        <span class="row" v-for="(el, index) in firstHalf(list)">{{ el.toString() }} =</span>
+                    </div>
+                    <div class="column">
+                        <span class="row" v-for="(el, index) in lastHalf(list)">{{ el.toString() }} =</span>
+                    </div>
                 </div>
             </div>
         </panel>

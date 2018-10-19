@@ -7,6 +7,32 @@ Array.prototype.removeIndex = function(index) {
     this.splice(index, 1);
 };
 
+function uploadToPastebin(data, callback = console.log) {
+    let body = "api_dev_key=1dfd342af2837432ca84ba4374e44a33" +
+        "&api_option=paste" +
+        "&api_paste_code=" + encodeURIComponent(data) +
+        "&api_paste_private=1" +
+        "&api_paste_format=json" +
+        "&api_paste_expire_date=N" +
+        "&api_paste_name=mathgen%20data";
+
+    let xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === 4) {
+            callback(this.responseText);
+        }
+    });
+
+    xhr.open("POST", "https://pastebin.com/api/api_post.php");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("cache-control", "no-cache");
+    xhr.setRequestHeader("Postman-Token", "a0bd0ab3-7799-4c25-ae5a-1c636152b15e");
+
+    xhr.send(body);
+}
+
 const ts = new Typeson().register({
     Operator:Operator,
     Addition:Addition,
@@ -45,10 +71,7 @@ const app = new Vue({
         generate: function () {
             let results = generator.generate();
             this.hist.push(results);
-            this.$Notice.open({
-                title: '算式',
-                desc: results.toString().replace(/,/g, '<br>'),
-            });
+            this.$Message.success(`成功生成${results.length}个算式`)
         },
         save: function () {
             let json = ts.stringify(generator);
@@ -92,6 +115,7 @@ const app = new Vue({
             printJS({
                 printable: 'history' + index.toString(),
                 type: 'html',
+                scanStyles: false,
                 css: 'print.css'
             })
         },
