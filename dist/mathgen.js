@@ -8,13 +8,16 @@ Array.prototype.remove = function (element) {
 Array.prototype.removeIndex = function (index) {
     this.splice(index, 1);
 };
-String.prototype.afterLast = function (str, separator) {
-    var index = str.lastIndexOf(separator);
+String.prototype.afterLast = function (separator) {
+    var index = this.lastIndexOf(separator);
     if (index !== -1) {
-        return str.slice(index + 1);
+        return this.slice(index + 1);
     } else {
         return null;
     }
+};
+String.prototype.trimEnd = function (char) {
+    return this.replace(new RegExp('\\' + char + '+$', 'g'), '');
 };
 
 function uploadJSON(json) {
@@ -140,7 +143,8 @@ var app = new Vue({
 
             uploadJSON(ts.encapsulate(generator), function (link) {
                 return Vue.nextTick(function () {
-                    link = 'https://wenghy.me/mathgen?' + link.afterLast('/');
+                    console.log(link);
+                    link = 'https://wenghy.me/mathgen/?' + link.trimEnd('/').afterLast('/');
                     _this3.$Modal.confirm({
                         title: '分享成功!',
                         content: link,
