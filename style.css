@@ -1,5 +1,3 @@
-@import url("https://cdn.jsdelivr.net/npm/iview/dist/styles/iview.css");
-
 #app {
     padding: 32px;
 }
@@ -11,4 +9,17 @@
 
 input, textarea, .mono {
     font-family:DejaVu Sans Mono,Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+}
+
+.split {
+    overflow: auto;
+}
+
+.column {
+    float: left;
+    width: 50%;
+}
+
+.row {
+    display: block;
 }

@@ -12,5 +12,6 @@
     <orderEntry type="library" name="bundle" level="application" />
     <orderEntry type="library" name="iview" level="application" />
     <orderEntry type="library" name="vue-clipboard" level="application" />
+    <orderEntry type="library" name="print" level="application" />
   </component>
 </module>

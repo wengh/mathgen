@@ -4,6 +4,10 @@ Array.prototype.randElement = function () {
     return this[Math.floor(Math.random() * this.length)];
 };
 
+function ID () {
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
+
 function rand(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -187,6 +191,7 @@ class OperatorGen {
         this.operator = operator;
         this.range = range;
         this.rules = rules;
+        this.id = ID();
     }
 
     toggleRangeType() {

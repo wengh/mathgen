@@ -36,11 +36,13 @@ var ts = new Typeson().register({
 });
 
 var generator = new Generator(1, 1, 10);
+var hist = [];
 
 var app = new Vue({
     el: '#app',
     data: {
-        generator: generator
+        generator: generator,
+        hist: hist
     },
     methods: {
         addOperator: function addOperator(operator) {
@@ -48,26 +50,24 @@ var app = new Vue({
         },
         generate: function generate() {
             var results = generator.generate();
+            this.hist.push(results);
             this.$Notice.open({
                 title: '算式',
-                desc: results.toString().replace(/,/g, '<br>'),
-                duration: 0
+                desc: results.toString().replace(/,/g, '<br>')
             });
         },
         save: function save() {
             var json = ts.stringify(generator);
             this.$Notice.open({
                 title: 'JSON数据 - 已复制到剪贴板',
-                desc: json,
-                duration: 5
+                desc: json
             });
             this.$copyText(json);
         },
         load: function load(json) {
             generator = this.$root.$data.generator = ts.parse(json);
             this.$Notice.open({
-                title: '已加载JSON',
-                duration: 3
+                title: '已加载JSON'
             });
         },
         showLoadModal: function showLoadModal() {
@@ -99,6 +99,19 @@ var app = new Vue({
         },
         removeDecimal: function removeDecimal(str) {
             return str.substr(0, str.indexOf('.'));
+        },
+        print: function print(index) {
+            printJS({
+                printable: 'history' + index.toString(),
+                type: 'html',
+                css: 'print.css'
+            });
+        },
+        firstHalf: function firstHalf(list) {
+            return list.slice(0, Math.floor(list.length / 2));
+        },
+        lastHalf: function lastHalf(list) {
+            return list.slice(Math.floor(list.length / 2));
         }
     }
 });

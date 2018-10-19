@@ -2,6 +2,8 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/combine/npm/vue@2/dist/vue.min.js,npm/iview@3/dist/iview.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/iview/dist/styles/iview.css">
+    <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,7 +23,7 @@
     </dropdown>
     <divider></divider>
     <collapse>
-        <panel v-for="(op, index) in generator.operators" :key="'op' + index">
+        <panel v-for="(op, index) in generator.operators" :key="op.id">
             <span>{{ op.operatorName }}</span>
             <div slot="content" class="editor">
                 <collapse simple>
@@ -45,8 +47,8 @@
                             </div>
                             优先计算:
                             <radio-group v-model="op.range.first" type="button">
-                                <radio label="a">a</radio>
-                                <radio label="b">b</radio>
+                                <radio label="0">a</radio>
+                                <radio label="1">b</radio>
                             </radio-group>
                             <div v-if="op.range.isAdv">
                                 <divider orientation="left">高级选项</divider>
@@ -60,9 +62,8 @@
                         </div>
                     </panel>
                 </collapse>
-                <i-button type="primary" @click="op.addRule()" style="margin-top: 6px">
-                    添加规则
-                </i-button>
+                <i-button type="primary" @click="op.addRule()" style="margin-top: 6px">添加规则</i-button>
+                <i-button type="error" @click="generator.operators.removeIndex(index)" style="margin-top: 6px">删除运算符</i-button>
                 <div v-for="(rule, index) in op.rules">
                     <i-input v-model="rule.condition" placeholder="布尔值表达式" style="width: 100%">
                         <i-button slot="append" @click="op.rules.removeIndex(index)" class="no-spacing"
@@ -74,15 +75,33 @@
     </collapse>
     <divider></divider>
     数量: <input-number :max="1000" :min="1" :step="1" :precision="1" :formatter="removeDecimal" v-model="generator.count"></input-number>
-    <i-button @click="generate" type="primary" icon="md-shuffle">生成算式</i-button>
+    <i-button @click="generate" type="primary" icon="md-shuffle">生成题目</i-button>
     <divider orientation="left">加载/保存</divider>
     <i-button @click="save" icon="md-code">生成JSON</i-button>
     <i-button @click="showLoadModal" icon="md-exit">加载JSON</i-button>
     <divider></divider>
     <p class="mono">{{ generator }}</p>
+    <divider orientation="left">生成记录</divider>
+    <collapse>
+        <panel v-for="(list, index) in hist" :key="index">
+            <tooltip content="打印题目">
+                <a @click="print(index)" style="margin-right: 30px"><icon size="20" type="md-print"></icon></a>
+            </tooltip>
+            <span>第{{ (index + 1).toString() + '次生成, 题目数量: ' + list.length.toString() }}个</span>
+            <div slot="content" class="split" :id="'history' + index">
+                <div class="column">
+                    <span class="row" v-for="(el, index) in firstHalf(list)">{{ el.toString() }} =</span>
+                </div>
+                <div class="column">
+                    <span class="row" v-for="(el, index) in lastHalf(list)">{{ el.toString() }} =</span>
+                </div>
+            </div>
+        </panel>
+    </collapse>
 </div>
 
 <script src="https://cdn.jsdelivr.net/combine/npm/typeson@5/dist/typeson.min.js,npm/typeson-registry@1.0.0-alpha.21/dist/all.min.js,npm/vue-clipboard2@0.2/dist/vue-clipboard.min.js"></script>
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
 <script src="expr-eval.min.js"></script>
 <script src="dist/operators.min.js"></script>
 <script src="dist/generation.min.js"></script>

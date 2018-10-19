@@ -1,0 +1,33 @@
+@page {
+    size: portrait;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+}
+
+.split * {
+    all:initial;
+}
+
+.split {
+    overflow: auto;
+    margin: 0;
+}
+
+.column {
+    float: left;
+    width: 50%;
+    padding: 0;
+    margin: 0;
+}
+
+.row {
+    display: block;
+    line-height: 5vh;
+    font-size: 3vh;
+    padding: 0;
+    margin: 0;
+}
