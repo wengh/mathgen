@@ -112,19 +112,6 @@ var RandRange = function () {
             return [a, b];
         }
     }, {
-        key: 'first',
-        set: function set(num) {
-            num = parseInt(num);
-            if (num === 0) {
-                this.bFirst = false;
-            } else if (num === 1) {
-                this.bFirst = true;
-            }
-        },
-        get: function get() {
-            return this.bFirst ? 1 : 0;
-        }
-    }, {
         key: 'minA',
         set: function set(expr) {
             this._minA = new Expression(expr);
@@ -169,7 +156,8 @@ var RandRange = function () {
 var RandRangeAdv = function (_RandRange) {
     _inherits(RandRangeAdv, _RandRange);
 
-    function RandRangeAdv(minA, maxA, minB, maxB, expression, target) {
+    function RandRangeAdv(minA, maxA, minB, maxB, expression) {
+        var target = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
         var BFirst = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : false;
 
         _classCallCheck(this, RandRangeAdv);
@@ -200,15 +188,6 @@ var RandRangeAdv = function (_RandRange) {
         },
         get: function get() {
             return this._expression.source;
-        }
-    }, {
-        key: 'target',
-        set: function set(num) {
-            num = parseInt(num);
-            this._target = num;
-        },
-        get: function get() {
-            return this._target;
         }
     }, {
         key: 'isAdv',
@@ -273,7 +252,7 @@ var OperatorGen = function () {
             if (this.range.isAdv) {
                 this.range = new RandRange(this.range.minA, this.range.maxA, this.range.minB, this.range.maxB, this.range.bFirst);
             } else {
-                this.range = new RandRangeAdv(this.range.minA, this.range.maxA, this.range.minB, this.range.maxB, 'a', 'a', this.range.bFirst);
+                this.range = new RandRangeAdv(this.range.minA, this.range.maxA, this.range.minB, this.range.maxB, 'a', 0, this.range.bFirst);
             }
         }
     }, {

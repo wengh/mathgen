@@ -25,70 +25,51 @@
     <collapse>
         <panel v-for="(op, index) in generator.operators" :key="op.id">
             <span>{{ op.operatorName }}</span>
-            <div slot="content" class="editor">
-                <collapse simple>
-                    <panel>
-                        <span v-if="!op.range.isAdv">随机取值</span>
-                        <span v-else>高级随机取值</span>
-                        <div slot="content">
-                            <i-button type="warning" @click="op.toggleRangeType()">
-                                <span v-if="op.range.isAdv">切换到普通随机取值 (会丢失高级选项)</span>
-                                <span v-else>切换到高级随机取值</span>
-                            </i-button>
-                            <div>
-                                <divider orientation="left">a {{ op.operatorSymbol }} b</divider>
-                                <i-input v-model="op.range.minA" placeholder="数字/表达式" style="width: auto"></i-input>
-                                <span> ≤ a ≤ </span>
-                                <i-input v-model="op.range.maxA" placeholder="数字/表达式" style="width: auto"></i-input>
-                                <br>
-                                <i-input v-model="op.range.minB" placeholder="数字/表达式" style="width: auto"></i-input>
-                                <span> ≤ b ≤ </span>
-                                <i-input v-model="op.range.maxB" placeholder="数字/表达式" style="width: auto"></i-input>
-                            </div>
-                            优先计算:
-                            <radio-group v-model="op.range.first" type="button">
-                                <radio label="0">a</radio>
-                                <radio label="1">b</radio>
-                            </radio-group>
-                            <div v-if="op.range.isAdv">
-                                <divider orientation="left">高级选项</divider>
-                                覆盖:
-                                <radio-group v-model="op.range.target" type="button">
-                                    <radio label="0">a</radio>
-                                    <radio label="1">b</radio>
-                                </radio-group><br>
-                                {{ op.range.target === 0 ? 'a' : 'b' }} = <i-input v-model="op.range.expression" placeholder="表达式" style="width: auto"></i-input>
-                            </div>
-                        </div>
-                    </panel>
-                </collapse>
-                <i-button type="primary" @click="op.addRule()" style="margin-top: 6px">添加规则</i-button>
-                <i-button type="error" @click="generator.operators.removeIndex(index)" style="margin-top: 6px">删除运算符</i-button>
+            <div slot="content">
+                <div>
+                    <em>a {{ op.operatorSymbol }} b</em><br>
+                    <i-input v-model="op.range.minA" placeholder="数字/表达式" style="width: auto" spacing></i-input>
+                    <span> <= a <= </span>
+                    <i-input v-model="op.range.maxA" placeholder="数字/表达式" style="width: auto" spacing></i-input>
+                    <br>
+                    <i-input v-model="op.range.minB" placeholder="数字/表达式" style="width: auto" spacing></i-input>
+                    <span> <= b <= </span>
+                    <i-input v-model="op.range.maxB" placeholder="数字/表达式" style="width: auto" spacing></i-input>
+                </div>
+                优先计算:
+                <radio-group v-model="op.range.bFirst" type="button" spacing>
+                    <radio :label="false">a</radio>
+                    <radio :label="true">b</radio>
+                </radio-group><br>
+                <i-button type="warning" @click="op.toggleRangeType()" spacing>
+                    <span v-if="op.range.isAdv">关闭覆盖选项</span>
+                    <span v-else>启用覆盖选项</span>
+                </i-button>
+                <i-input v-if="op.range.isAdv" v-model="op.range.expression" placeholder="表达式" spacing style="width: auto;">
+                    <i-select v-model="op.range.target" slot="prepend" style="width: 4em" class="mono">
+                        <i-option :value="0" class="mono">a =</i-option>
+                        <i-option :value="1" class="mono">b =</i-option>
+                    </i-select>
+                </i-input><br>
+                <i-button type="primary" @click="op.addRule()">添加规则</i-button>
+                <i-button type="error" @click="generator.operators.removeIndex(index)">删除运算符</i-button>
                 <div v-for="(rule, index) in op.rules">
-                    <i-input v-model="rule.condition" placeholder="布尔值表达式" style="width: 100%">
-                        <i-button slot="append" @click="op.rules.removeIndex(index)" class="no-spacing"
-                                  style="height: 32px" type="error" icon="md-close"></i-button>
+                    <i-input v-model="rule.condition" placeholder="布尔值表达式" spacing>
+                        <i-button slot="append" @click="op.rules.removeIndex(index)" type="error" icon="md-close"></i-button>
                     </i-input>
                 </div>
             </div>
         </panel>
     </collapse>
-    <divider></divider>
+    <divider orientation="left">生成</divider>
     数量: <input-number :max="1000" :min="1" :step="1" :precision="1" :formatter="removeDecimal" v-model="generator.count"></input-number>
     <i-button @click="generate" type="primary" icon="md-shuffle">生成题目</i-button>
     <divider orientation="left">加载/保存</divider>
     <button-group>
         <i-button @click="save" icon="md-code">生成JSON</i-button>
         <i-button @click="showLoadModal" icon="md-exit">加载JSON</i-button>
-        <i-button @click="share" icon="md-share">分享</i-button>
+        <i-button @click="share" icon="md-share">分享链接</i-button>
     </button-group>
-    <divider></divider>
-    <collapse>
-        <panel>
-            数据
-            <p slot="content" class="mono">{{ generator }}</p>
-        </panel>
-    </collapse>
     <divider orientation="left">生成记录</divider>
     <collapse>
         <panel v-for="(list, index) in hist" :key="index">

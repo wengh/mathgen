@@ -2,7 +2,7 @@
     padding: 32px;
 }
 
-.editor * :not(.no-spacing):not(input){
+*[spacing] {
     margin-top: 3px;
     margin-bottom: 3px;
 }

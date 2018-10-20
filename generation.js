@@ -85,19 +85,6 @@ class RandRange {
         return [a, b];
     }
 
-    set first(num) {
-        num = parseInt(num);
-        if (num === 0) {
-            this.bFirst = false;
-        }
-        else if (num === 1) {
-            this.bFirst = true;
-        }
-    }
-    get first() {
-        return this.bFirst ? 1 : 0;
-    }
-
     set minA(expr) {
         this._minA = new Expression(expr);
     }
@@ -129,7 +116,7 @@ class RandRange {
 }
 
 class RandRangeAdv extends RandRange {
-    constructor(minA, maxA, minB, maxB, expression, target, BFirst = false) {
+    constructor(minA, maxA, minB, maxB, expression, target = 0, BFirst = false) {
         super(minA, maxA, minB, maxB, BFirst);
         this.expression = expression;
         this.target = target;
@@ -140,14 +127,6 @@ class RandRangeAdv extends RandRange {
     }
     get expression() {
         return this._expression.source;
-    }
-
-    set target(num) {
-        num = parseInt(num);
-        this._target = num;
-    }
-    get target() {
-        return this._target;
     }
 
     generate(a = undefined, b = undefined) {
@@ -199,7 +178,7 @@ class OperatorGen {
             this.range = new RandRange(this.range.minA, this.range.maxA, this.range.minB, this.range.maxB, this.range.bFirst);
         }
         else {
-            this.range = new RandRangeAdv(this.range.minA, this.range.maxA, this.range.minB, this.range.maxB, 'a', 'a', this.range.bFirst);
+            this.range = new RandRangeAdv(this.range.minA, this.range.maxA, this.range.minB, this.range.maxB, 'a', 0, this.range.bFirst);
         }
     }
 
