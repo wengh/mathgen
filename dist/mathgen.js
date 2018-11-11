@@ -168,6 +168,9 @@ var app = new Vue({
         },
         lastHalf: function lastHalf(list) {
             return list.slice(Math.floor(list.length / 2));
+        },
+        prettify: function prettify(x) {
+            return x.replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−');
         }
     }
 });

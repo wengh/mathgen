@@ -142,6 +142,7 @@ const app = new Vue({
         },
         firstHalf: (list) => list.slice(0, Math.floor(list.length / 2)),
         lastHalf: (list) => list.slice(Math.floor(list.length / 2)),
+        prettify: x => x.replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−'),
     }
 });
 

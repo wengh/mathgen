@@ -94,10 +94,10 @@
                 <i-button @click="print(index)" style="margin-bottom: 6px" icon="md-print">打印</i-button>
                 <div class="split" :id="'history' + index">
                     <div class="column">
-                        <span class="row" v-for="el in firstHalf(list)">{{ el.toString() }} =</span>
+                        <span class="row" v-for="el in firstHalf(list)">{{ prettify(el.toString()) }} =</span>
                     </div>
                     <div class="column">
-                        <span class="row" v-for="el in lastHalf(list)">{{ el.toString() }} =</span>
+                        <span class="row" v-for="el in lastHalf(list)">{{ prettify(el.toString()) }} =</span>
                     </div>
                 </div>
             </div>
