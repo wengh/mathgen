@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>help</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../pandoc.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h3 id="表达式语法">表达式语法</h3>
+<p>基本上和js语法差不多，除了部分运算符为数学表达式外。例如： <code>^</code> 运算符代表指数函数，而不是异或。</p>
+<h4 id="运算符优先级从上到下依次递减">运算符优先级（从上到下依次递减）</h4>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">运算符</th>
+<th style="text-align: left;">关联性</th>
+<th style="text-align: left;">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>( ... )</code></td>
+<td style="text-align: left;">无</td>
+<td style="text-align: left;">优先计算</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>f()</code>, <code>x.y</code></td>
+<td style="text-align: left;">左</td>
+<td style="text-align: left;">调用函数、访问属性</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>!</code></td>
+<td style="text-align: left;">左</td>
+<td style="text-align: left;">阶乘</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>^</code></td>
+<td style="text-align: left;">右</td>
+<td style="text-align: left;">指数运算</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>+</code>, <code>-</code>, <code>not</code>, <code>sqrt</code>, <code>etc</code>.</td>
+<td style="text-align: left;">右</td>
+<td style="text-align: left;">前缀一元运算符 (请参阅下面的完整列表)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>*</code>, <code>/</code>, <code>%</code></td>
+<td style="text-align: left;">左</td>
+<td style="text-align: left;">乘法、除法、求余</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>+</code>, <code>-</code>, <code>||</code></td>
+<td style="text-align: left;">左</td>
+<td style="text-align: left;">加法、减法、字符串串联</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>==</code>, <code>!=</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&lt;</code></td>
+<td style="text-align: left;">左</td>
+<td style="text-align: left;">等于、不等于……</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>a in S</code></td>
+<td style="text-align: left;">左</td>
+<td style="text-align: left;">a 是否是 集合S 中的元素</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>and</code></td>
+<td style="text-align: left;">左</td>
+<td style="text-align: left;">逻辑与运算符</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>or</code></td>
+<td style="text-align: left;">左</td>
+<td style="text-align: left;">逻辑或运算符</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>c ? a : b</code></td>
+<td style="text-align: left;">右</td>
+<td style="text-align: left;">三元条件运算符 (if c then a else b)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="一元运算符">一元运算符</h4>
+<p>解析器包含一些内置函数，实际上会作为一元运算符来使用。他们和预定义函数的区别是他们只接受一个参数， 而且不需要括号包围起来。包含括号的一元运算符优先级最高，不包含括号的一元运算符优先级仅次于 <code>^</code>。 例如，<code>sin(x)^2</code> 等价于 <code>(sin x)^2</code>, 而 <code>sin x^2</code> 等价于 <code>sin(x^2)</code>。</p>
+<p><code>+</code> 和 <code>-</code> 两种一元运算符是例外，因为不存在对应的函数，所以优先级永远最高。.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">运算符</th>
+<th style="text-align: left;">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>-x</code></td>
+<td style="text-align: left;">负数</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>+x</code></td>
+<td style="text-align: left;">将操作数转化为数字类型。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>x!</code></td>
+<td style="text-align: left;">对于正整数是阶乘，对于非正整数是 <code>gamma(x + 1)</code> 。</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>abs x</code></td>
+<td style="text-align: left;"><code>x</code>的绝对值</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>acos x</code></td>
+<td style="text-align: left;">反余弦，<code>x</code>等于弧度</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>acosh x</code></td>
+<td style="text-align: left;">反双曲余弦，<code>x</code>等于弧度</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>asin x</code></td>
+<td style="text-align: left;">反正弦，<code>x</code>等于弧度</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>asinh x</code></td>
+<td style="text-align: left;">反双曲正弦，<code>x</code>等于弧度</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>atan x</code></td>
+<td style="text-align: left;">反正切，<code>x</code>等于弧度</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>atanh x</code></td>
+<td style="text-align: left;">反双曲正切，<code>x</code>等于弧度</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ceil x</code></td>
+<td style="text-align: left;">向上取整</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cos x</code></td>
+<td style="text-align: left;">余弦，<code>x</code>等于弧度</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>cosh x</code></td>
+<td style="text-align: left;">双曲余弦，<code>x</code>等于弧度</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>exp x</code></td>
+<td style="text-align: left;">指数函数，等价于 e^<code>x</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>floor x</code></td>
+<td style="text-align: left;">向下取整</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>length x</code></td>
+<td style="text-align: left;"><code>x</code>的字符串长度</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ln x</code></td>
+<td style="text-align: left;"><code>x</code>的自然对数</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>log x</code></td>
+<td style="text-align: left;"><code>x</code>的自然对数</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>log10 x</code></td>
+<td style="text-align: left;"><code>x</code>的常用对数</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>not x</code></td>
+<td style="text-align: left;">逻辑否</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>round x</code></td>
+<td style="text-align: left;">舍入取整，使用四舍五入法</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>sin x</code></td>
+<td style="text-align: left;">正弦，<code>x</code>等于弧度</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>sinh x</code></td>
+<td style="text-align: left;">双曲正弦，<code>x</code>等于弧度</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>sqrt x</code></td>
+<td style="text-align: left;">平方根，如果 <code>x</code> 为负数， 结果为 <code>NaN</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>tan x</code></td>
+<td style="text-align: left;">正切，<code>x</code> 等于弧度</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tanh x</code></td>
+<td style="text-align: left;">双曲正切，<code>x</code> 等于弧度</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>trunc x</code></td>
+<td style="text-align: left;">直接取整，舍去小数部分。<code>x</code>为正数时向下取整，<code>x</code>为负数时向上取整</td>
+</tr>
+</tbody>
+</table>
+<h4 id="预定义函数">预定义函数</h4>
+<p>除了运算符外，还有一些预定义的函数。预定义函数不会被 simplify 处理</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">函数</th>
+<th style="text-align: left;">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>random(n)</code></td>
+<td style="text-align: left;">获取 <code>[0, n)</code> 之间的随机数，如果 <code>n = 0</code>，或者未提供 <code>n</code> ,则默认使用 <code>1</code> 代替 <code>n</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>min(a,b,…)</code></td>
+<td style="text-align: left;">列表中最小的数字</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>max(a,b,…)</code></td>
+<td style="text-align: left;">列表中最大的数字</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>hypot(a,b)</code></td>
+<td style="text-align: left;">斜边长, <code>a</code>, <code>b</code> 分别指直角三角形的两个直角边，结果是直角三角形斜边长.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pyt(a, b)</code></td>
+<td style="text-align: left;">等价于 <code>hypot</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pow(x, y)</code></td>
+<td style="text-align: left;">等价于 <code>x ^ y</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>atan2(y, x)</code></td>
+<td style="text-align: left;"><code>atan(x / y)</code>. i.e. 坐标系中点 <code>(0, 0)</code> 到点 <code>(x, y)</code> 连线与x轴之间夹角.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>if(c, a, b)</code></td>
+<td style="text-align: left;">三元表达式 <code>c ? a : b</code> 的函数形式</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>roundTo(x, n)</code></td>
+<td style="text-align: left;">将 <code>x</code> 四舍五入 <code>n</code> 位小数.</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
