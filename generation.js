@@ -1,9 +1,16 @@
-let parser = new Parser();
+let parser = new Parser({
+    operators: {
+        'in': true
+    }
+});
 
 Array.prototype.randElement = function () {
     return this[Math.floor(Math.random() * this.length)];
 };
 
+/**
+ * @return {string}
+ */
 function ID () {
     return '_' + Math.random().toString(36).substr(2, 9);
 }

@@ -12,12 +12,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var parser = new Parser();
+var parser = new Parser({
+    operators: {
+        'in': true
+    }
+});
 
 Array.prototype.randElement = function () {
     return this[Math.floor(Math.random() * this.length)];
 };
 
+/**
+ * @return {string}
+ */
 function ID() {
     return '_' + Math.random().toString(36).substr(2, 9);
 }

@@ -21,6 +21,11 @@
             <dropdown-item name="division">除法</dropdown-item>
         </dropdown-menu>
     </dropdown>
+    <divider type="vertical"></divider>
+    <i-button @click="showHelp = true">
+        表达式帮助
+        <icon type="md-help-circle"></icon>
+    </i-button>
     <divider></divider>
     <collapse>
         <panel v-for="(op, index) in generator.operators" :key="op.id">
@@ -36,27 +41,38 @@
                     <span> <= b <= </span>
                     <i-input v-model="op.range.maxB" placeholder="数字/表达式" style="width: auto" spacing></i-input>
                 </div>
-                优先计算:
-                <radio-group v-model="op.range.bFirst" type="button" spacing>
-                    <radio :label="false">a</radio>
-                    <radio :label="true">b</radio>
-                </radio-group><br>
-                <i-button type="warning" @click="op.toggleRangeType()" spacing>
-                    <span v-if="op.range.isAdv">关闭覆盖选项</span>
-                    <span v-else>启用覆盖选项</span>
-                </i-button>
-                <i-input v-if="op.range.isAdv" v-model="op.range.expression" placeholder="表达式" spacing style="width: auto;">
-                    <i-select v-model="op.range.target" slot="prepend" style="width: 4em" class="mono">
-                        <i-option :value="0" class="mono">a =</i-option>
-                        <i-option :value="1" class="mono">b =</i-option>
-                    </i-select>
-                </i-input><br>
-                <i-button type="primary" @click="op.addRule()">添加规则</i-button>
+                <tooltip content="优先计算 a，b 的取值范围表达式中就可以使用 a 的数值，反之亦然" placement="right" max-width="600" spacing>
+                    优先计算:
+                    <radio-group v-model="op.range.bFirst" type="button">
+                        <radio :label="false">a</radio>
+                        <radio :label="true">b</radio>
+                    </radio-group>
+                </tooltip><br>
+                <tooltip content="重新为 a 或 b 赋值，在除法中作用比较大。示例：a = a * b" placement="right" max-width="600" spacing>
+                    <i-button type="warning" @click="op.toggleRangeType()">
+                        <span v-if="op.range.isAdv">关闭覆盖选项</span>
+                        <span v-else>启用覆盖选项</span>
+                    </i-button><br>
+                    <i-input v-if="op.range.isAdv" v-model="op.range.expression" placeholder="表达式" style="width: auto;" spacing>
+                        <i-select v-model="op.range.target" slot="prepend" style="width: 4em" class="mono">
+                            <i-option :value="0" class="mono">a =</i-option>
+                            <i-option :value="1" class="mono">b =</i-option>
+                        </i-select>
+                    </i-input>
+                </tooltip><br>
+                <i-button type="primary" @click="op.addRule()">添加条件</i-button>
                 <i-button type="error" @click="generator.operators.removeIndex(index)">删除运算符</i-button>
                 <div v-for="(rule, index) in op.rules">
-                    <i-input v-model="rule.condition" placeholder="布尔值表达式" spacing>
-                        <i-button slot="append" @click="op.rules.removeIndex(index)" type="error" icon="md-close"></i-button>
-                    </i-input>
+                    <tooltip style="width: 100%" placement="bottom-start" spacing>
+                        <i-input v-model="rule.condition" placeholder="逻辑表达式">
+                            <i-button slot="prepend" @click="op.rules.removeIndex(index)" type="error" color icon="md-close"></i-button>
+                        </i-input>
+                        <div slot="content">
+                            <em>示例:</em>
+                            <p>a >= b (a 大于等于 b)</p>
+                            <p>b % 10 > a % 10 (b 的个位大于 a 的个位)</p>
+                        </div>
+                    </tooltip>
                 </div>
             </div>
         </panel>
@@ -78,15 +94,18 @@
                 <i-button @click="print(index)" style="margin-bottom: 6px" icon="md-print">打印</i-button>
                 <div class="split" :id="'history' + index">
                     <div class="column">
-                        <span class="row" v-for="(el, index) in firstHalf(list)">{{ el.toString() }} =</span>
+                        <span class="row" v-for="el in firstHalf(list)">{{ el.toString() }} =</span>
                     </div>
                     <div class="column">
-                        <span class="row" v-for="(el, index) in lastHalf(list)">{{ el.toString() }} =</span>
+                        <span class="row" v-for="el in lastHalf(list)">{{ el.toString() }} =</span>
                     </div>
                 </div>
             </div>
         </panel>
     </collapse>
+    <drawer title="表达式" width="40" :mask="false" :mask-closable="false" :closable="true" v-model="showHelp">
+        <iframe src="dist/help.html" frameborder="0" style="margin: 0; height: 100%; width: 100%; border: 0;"></iframe>
+    </drawer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/combine/npm/typeson@5/dist/typeson.min.js,npm/typeson-registry@1.0.0-alpha.21/dist/all.min.js,npm/vue-clipboard2@0.2/dist/vue-clipboard.min.js"></script>

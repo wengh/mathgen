@@ -1,8 +1,3 @@
-Array.prototype.remove = function(element) {
-    for(let i = this.length-1; i--;) {
-        if(this[i] === element) this.splice(i, 1);
-    }
-};
 Array.prototype.removeIndex = function(index) {
     this.splice(index, 1);
 };
@@ -72,7 +67,8 @@ const app = new Vue({
     el: '#app',
     data: {
         generator: generator,
-        hist: hist
+        hist: hist,
+        showHelp: false
     },
     methods: {
         addOperator: function (operator) {
