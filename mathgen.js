@@ -15,26 +15,34 @@ String.prototype.trimEnd = function(char) {
 };
 
 function uploadJSON(json, callback = console.log) {
-    const data = JSON.stringify(json);
+    let data = JSON.stringify(json);
+    data = JSON.stringify({
+        "language": "javascript",
+        "title": "https://github.com/Why7090/mathgen",
+        "public": true,
+        "files": [{
+            "name": "data.json",
+            "content": data
+         }]
+    })
     const xhr = new XMLHttpRequest();
     xhr.addEventListener('readystatechange', function () {
         if (this.readyState === 4) {
-            callback(JSON.parse(this.responseText).uri);
+            callback(JSON.parse(this.responseText).id);
         }
     });
-    xhr.open('POST', 'https://api.myjson.com/bins');
+    xhr.open('POST', 'https://snippets.glot.io/snippets');
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('cache-control', 'no-cache');
     xhr.send(data);
 }
 function downloadJSON(id, callback = console.log) {
     const xhr = new XMLHttpRequest();
     xhr.addEventListener('readystatechange', function () {
         if (this.readyState === 4) {
-            callback(this.responseText);
+            callback(JSON.parse(this.responseText).files[0].content);
         }
     });
-    xhr.open('GET', 'https://api.myjson.com/bins/' + id);
+    xhr.open('GET', 'https://snippets.glot.io/snippets/' + id);
     xhr.send();
 }
 
@@ -118,9 +126,8 @@ const app = new Vue({
             })
         },
         share: function () {
-            uploadJSON(ts.encapsulate(generator), link => Vue.nextTick(() => {
-                console.log(link);
-                link = 'https://wenghy.me/mathgen/?' + link.trimEnd('/').afterLast('/');
+            uploadJSON(ts.encapsulate(generator), id => Vue.nextTick(() => {
+                const link = 'https://wenghy.me/mathgen/?' + id;
                 this.$Modal.confirm({
                     title: '分享成功!',
                     content: link,
