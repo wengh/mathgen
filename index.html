@@ -1,10 +1,11 @@
-<html>
+<html lang="zh-CN">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/combine/npm/vue@2/dist/vue.min.js,npm/iview@3/dist/iview.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/iview/dist/styles/iview.css">
     <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
     <link rel="stylesheet" href="style.css">
+    <title>数学出题器</title>
 </head>
 <body>
 
@@ -104,15 +105,15 @@
         </panel>
     </collapse>
     <drawer title="表达式" width="40" :mask="false" :mask-closable="false" :closable="true" v-model="showHelp">
-        <iframe src="dist/help.html" frameborder="0" style="margin: 0; height: 100%; width: 100%; border: 0;"></iframe>
+        <iframe src="help.html" frameborder="0" style="margin: 0; height: 100%; width: 100%; border: 0;"></iframe>
     </drawer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/combine/npm/typeson@5/dist/typeson.min.js,npm/typeson-registry@1.0.0-alpha.21/dist/all.min.js,npm/vue-clipboard2@0.2/dist/vue-clipboard.min.js"></script>
 <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
 <script src="expr-eval.min.js"></script>
-<script src="dist/operators.min.js"></script>
-<script src="dist/generation.min.js"></script>
-<script src="dist/mathgen.min.js"></script>
+<script src="operators.js"></script>
+<script src="generation.js"></script>
+<script src="mathgen.js"></script>
 </body>
 </html>

@@ -13,5 +13,8 @@
     <orderEntry type="library" name="iview" level="application" />
     <orderEntry type="library" name="vue-clipboard" level="application" />
     <orderEntry type="library" name="print" level="application" />
+    <orderEntry type="library" name="print" level="application" />
+    <orderEntry type="library" name="vue-clipboard" level="application" />
+    <orderEntry type="library" name="iview" level="application" />
   </component>
 </module>
